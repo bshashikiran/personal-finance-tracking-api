@@ -8,21 +8,24 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.bshashikiran.personalfinancetrackingapi.dto.UserDto;
 import dev.bshashikiran.personalfinancetrackingapi.model.User;
 import dev.bshashikiran.personalfinancetrackingapi.service.UserService;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
+//@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/getPersonalDetails")
+    @GetMapping("/getPersonalData")
     public ResponseEntity<User> getPersonalDetails(@RequestParam("mobile") Long mobile) {
         return ResponseEntity.ok(userService.getPersonalDetails(mobile));
     }
@@ -31,8 +34,4 @@ public class UserController {
     public ResponseEntity<String> saveUser(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.saveUser(userDto));
     }
-    
-
-
-
 }

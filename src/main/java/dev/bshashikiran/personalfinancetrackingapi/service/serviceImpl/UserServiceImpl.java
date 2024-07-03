@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         try {
             user.setUserName(userDto.getUserName());
             user.setEmail(userDto.getEmail());
-            user.setMobile(userDto.getMobileNumber());
+            user.setMobile(userDto.getMobile());
             if(userRepo.save(user).getUserId() != null) {
                 responseMsg = "Saved user details successfully.";
             } else {

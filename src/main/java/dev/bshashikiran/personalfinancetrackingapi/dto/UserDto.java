@@ -8,5 +8,5 @@ import lombok.Setter;
 public class UserDto {
     private String userName;
     private String email;
-    private Long mobileNumber;
+    private Long mobile;
 }
