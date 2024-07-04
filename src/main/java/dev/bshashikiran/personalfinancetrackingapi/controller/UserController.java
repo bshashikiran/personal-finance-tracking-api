@@ -9,7 +9,6 @@ import dev.bshashikiran.personalfinancetrackingapi.dto.UserDto;
 import dev.bshashikiran.personalfinancetrackingapi.model.User;
 import dev.bshashikiran.personalfinancetrackingapi.service.UserService;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin
-//@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
