@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.bshashikiran.personalfinancetrackingapi.dto.UserDto;
-import dev.bshashikiran.personalfinancetrackingapi.model.User;
+import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
+import dev.bshashikiran.personalfinancetrackingapi.model.UserPersonal;
 import dev.bshashikiran.personalfinancetrackingapi.service.UserService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +22,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/authenticateUser")
+    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+        return userService.authenticateUser(loginDto);
+    }
+
+    @PostMapping("/saveUser")
+    public ResponseEntity<String> saveUser(@RequestBody LoginDto loginDto) {
+        return userService.saveUser(loginDto);
+    }
+
     @GetMapping("/getPersonalData")
-    public ResponseEntity<User> getPersonalDetails(@RequestParam("mobile") Long mobile) {
+    public ResponseEntity<UserPersonal> getPersonalDetails(@RequestParam("mobile") Long mobile) {
         return ResponseEntity.ok(userService.getPersonalDetails(mobile));
     }
     
-    @PostMapping("/saveUser")
-    public ResponseEntity<String> saveUser(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.saveUser(userDto));
-    }
+
 }

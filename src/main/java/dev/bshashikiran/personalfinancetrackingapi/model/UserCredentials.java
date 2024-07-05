@@ -18,24 +18,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
-public class User implements Serializable {
-
-    private static final long serialVersionUID = -1L;
+@Table(name = "user_credentials")
+public class UserCredentials implements Serializable {
+    
+    public static final long serialVersionUID = -1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private Long userId;
+    @Column(name = "UCRFNUM")
+    private Long ucRfnum;
 
-    @Column(name = "USER_NAME")
+    @Column(name = "USER_NAME", nullable = false)
     private String userName;
 
-    @Column(name = "USER_EMAIL")
-    private String email;
-
-    @Column(name = "USER_MOBILE")
-    private Long mobile;
+    @Column(name = "USER_PASSWORD", nullable = false)
+    private String userPassword;
 
     @Column(name = "CREATEDATE", updatable = false)
     @CreationTimestamp
@@ -50,5 +47,5 @@ public class User implements Serializable {
 
     @Column(name = "ISACTIVE", nullable = false)
     private String isActive = "Y";
-    
+
 }
