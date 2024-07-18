@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import dev.bshashikiran.personalfinancetrackingapi.dto.AuthenticationResponse;
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
 import dev.bshashikiran.personalfinancetrackingapi.exception.InvalidPasswordException;
 import dev.bshashikiran.personalfinancetrackingapi.exception.UserNotFoundException;
@@ -32,13 +33,13 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public ResponseEntity<String> authenticateUser(LoginDto loginDto) {
+    public ResponseEntity<AuthenticationResponse> authenticateUser(LoginDto loginDto) {
         logger.info("Authenticating User...");
         try {
             UserCredentials userCredentials = userCredentialsRepo.findByUserName(loginDto.getUserName());
             if(userCredentials != null) {
                 if(passwordEncoder.matches(loginDto.getPassword(), userCredentials.getUserPassword())) {
-                    return ResponseEntity.ok("Login Successful");
+                    return ResponseEntity.ok(new AuthenticationResponse(200, "Login Successfull"));
                 } else {
                     throw new InvalidPasswordException("Invalid Password");
                 }
@@ -47,29 +48,29 @@ public class UserServiceImpl implements UserService {
             }
         } 
         catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthenticationResponse(404, e.getMessage()));
         }
         catch (InvalidPasswordException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResponse(401, e.getMessage()));
         }
         catch (Exception e) {
             logger.error("Exception occured while authenticating user : {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured while authenticating user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AuthenticationResponse(500, e.getMessage()));
         }
     }
 
     @Override
-    public ResponseEntity<String> saveUser(LoginDto loginDto) {
+    public ResponseEntity<AuthenticationResponse> saveUser(LoginDto loginDto) {
         logger.info("Saving user record...");
         try {
             UserCredentials userCredentials = new UserCredentials();
             userCredentials.setUserName(loginDto.getUserName());
             userCredentials.setUserPassword(passwordEncoder.encode(loginDto.getPassword()));
             userCredentialsRepo.save(userCredentials);
-            return ResponseEntity.ok("User Record Saved Successfully");
+            return ResponseEntity.ok(new AuthenticationResponse(200, "User Record Saved Successfully"));
         } catch (Exception e) {
             logger.error("Exception occured while saving user record: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured while saving user record");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new AuthenticationResponse(500, e.getMessage()));
         }
     }
 
