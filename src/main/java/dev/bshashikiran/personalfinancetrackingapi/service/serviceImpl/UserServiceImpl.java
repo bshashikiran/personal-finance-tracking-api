@@ -39,9 +39,9 @@ public class UserServiceImpl implements UserService {
             UserCredentials userCredentials = userCredentialsRepo.findByUserName(loginDto.getUserName());
             if(userCredentials != null) {
                 if(passwordEncoder.matches(loginDto.getPassword(), userCredentials.getUserPassword())) {
-                    return ResponseEntity.ok(new AuthenticationResponse(200, "Login Successfull"));
+                    return ResponseEntity.ok(new AuthenticationResponse(200, "Login Successful"));
                 } else {
-                    throw new InvalidPasswordException("Invalid Password");
+                    throw new InvalidPasswordException("Incorrect Password");
                 }
             } else {
                 throw new UserNotFoundException("Username not found");
