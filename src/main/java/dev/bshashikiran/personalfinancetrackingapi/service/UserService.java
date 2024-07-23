@@ -2,15 +2,15 @@ package dev.bshashikiran.personalfinancetrackingapi.service;
 
 import org.springframework.http.ResponseEntity;
 
-import dev.bshashikiran.personalfinancetrackingapi.dto.AuthenticationResponse;
+import dev.bshashikiran.personalfinancetrackingapi.dto.Response;
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
 import dev.bshashikiran.personalfinancetrackingapi.model.UserPersonal;
 
 public interface UserService {
 
-    ResponseEntity<AuthenticationResponse> authenticateUser(LoginDto loginDto);
+    ResponseEntity<Response> authenticateUser(LoginDto loginDto);
     
-    ResponseEntity<AuthenticationResponse> saveUser(LoginDto loginDto);
+    ResponseEntity<Response> saveUser(LoginDto loginDto);
     
     UserPersonal getPersonalDetails(Long mobile);
 }
