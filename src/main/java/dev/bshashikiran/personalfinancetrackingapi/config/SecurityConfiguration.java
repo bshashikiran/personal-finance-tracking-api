@@ -18,15 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    // private final AuthenticationProvider authenticationProvider;
-    // private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    // public SecurityConfiguration(
-    //         JwtAuthenticationFilter jwtAuthenticationFilter,
-    //         AuthenticationProvider authenticationProvider) {
-    //     this.authenticationProvider = authenticationProvider;
-    //     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    // }
+    
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
@@ -37,6 +29,7 @@ public class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
@@ -52,7 +45,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 

@@ -19,10 +19,6 @@ public class ApplicationConfiguration {
     @Autowired
     private UserCredentialsRepo userCredentialsRepo;
 
-    // public ApplicationConfiguration(UserCredentialsRepo userCredentialsRepo) {
-    //     this.userCredentialsRepo = userCredentialsRepo;
-    // }
-
     @Bean
     UserDetailsService userDetailsService() {
         return userName -> userCredentialsRepo.findByUserName(userName)

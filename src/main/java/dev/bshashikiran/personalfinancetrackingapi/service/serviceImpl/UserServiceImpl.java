@@ -1,24 +1,9 @@
 package dev.bshashikiran.personalfinancetrackingapi.service.serviceImpl;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import dev.bshashikiran.personalfinancetrackingapi.dto.Response;
-import dev.bshashikiran.personalfinancetrackingapi.constants.Constant;
-import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
-import dev.bshashikiran.personalfinancetrackingapi.exception.InvalidPasswordException;
-import dev.bshashikiran.personalfinancetrackingapi.model.UserCredentials;
-import dev.bshashikiran.personalfinancetrackingapi.model.UserPersonal;
-import dev.bshashikiran.personalfinancetrackingapi.repository.UserCredentialsRepo;
-import dev.bshashikiran.personalfinancetrackingapi.repository.UserPersonalRepo;
 import dev.bshashikiran.personalfinancetrackingapi.service.UserService;
 
 @Service
@@ -26,71 +11,4 @@ public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
-    private UserPersonalRepo userPersonalRepo;
-
-    @Autowired
-    private UserCredentialsRepo userCredentialsRepo;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private Constant constant;
-
-    @Override
-    public ResponseEntity<Response> authenticateUser(LoginDto loginDto) {
-        logger.info("Authenticating User...");
-        try {
-            Optional<UserCredentials> userCredentials = userCredentialsRepo.findByUserName(loginDto.getUserName());
-            if(userCredentials.isPresent()) {
-                UserCredentials userCred = userCredentials.get();
-                if(passwordEncoder.matches(loginDto.getPassword(), userCred.getUserPassword())) {
-                    return ResponseEntity.ok(new Response(200, "Login Successful"));
-                } else {
-                    throw new InvalidPasswordException("Incorrect Password");
-                }
-            } else {
-                throw new UsernameNotFoundException("Username not found");
-            }
-        } 
-        catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(404, e.getMessage()));
-        }
-        catch (InvalidPasswordException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(401, e.getMessage()));
-        }
-        catch (Exception e) {
-            logger.error("Exception occured while authenticating user : {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(500, e.getMessage()));
-        }
-    }
-
-    @Override
-    public ResponseEntity<Response> saveUser(LoginDto loginDto) {
-        logger.info("Saving user record...");
-        try {
-            UserCredentials userCredentials = new UserCredentials();
-            userCredentials.setUserName(loginDto.getUserName());
-            userCredentials.setUserPassword(passwordEncoder.encode(loginDto.getPassword()));
-            userCredentialsRepo.save(userCredentials);
-            return ResponseEntity.ok(new Response(200, "User Record Saved Successfully"));
-        } catch (Exception e) {
-            logger.error("Exception occured while saving user record: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response(500, e.getMessage()));
-        }
-    }
-
-    @Override
-    public UserPersonal getPersonalDetails(Long mobile) {
-        logger.info("Getting User Personal Details...");
-        UserPersonal user = new UserPersonal();
-        try {
-            user = userPersonalRepo.findByMobile(mobile);
-            return user;
-        } catch (Exception e) {
-            logger.info("Exception occured while fetching user personal data : {}", e.getMessage(), e);
-            return null;
-        }
-    }
 }
