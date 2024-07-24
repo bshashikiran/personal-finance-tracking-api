@@ -31,8 +31,8 @@ public class UserPersonal implements Serializable {
     @Column(name = "UP_UCRFNUM", nullable = false)
     private Long upUcRfnum;
 
-    @Column(name = "USER_NAME", nullable = false)
-    private String userName;
+    @Column(name = "FNAME", nullable = false)
+    private String fname;
 
     @Column(name = "USER_EMAIL")
     private String email;

@@ -2,11 +2,14 @@ package dev.bshashikiran.personalfinancetrackingapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.bshashikiran.personalfinancetrackingapi.dto.Response;
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
+import dev.bshashikiran.personalfinancetrackingapi.model.UserCredentials;
 import dev.bshashikiran.personalfinancetrackingapi.model.UserPersonal;
 import dev.bshashikiran.personalfinancetrackingapi.service.UserService;
 
@@ -22,6 +25,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping("/me")
+    public ResponseEntity<UserCredentials> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserCredentials currentUser = (UserCredentials) authentication.getPrincipal();
+        return ResponseEntity.ok(currentUser);
+    }
 
     @PostMapping("/authenticateUser")
     public ResponseEntity<Response> authenticateUser(@RequestBody LoginDto loginDto) {

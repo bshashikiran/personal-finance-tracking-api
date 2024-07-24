@@ -1,17 +1,20 @@
 package dev.bshashikiran.personalfinancetrackingapi.service.serviceImpl;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import dev.bshashikiran.personalfinancetrackingapi.dto.Response;
+import dev.bshashikiran.personalfinancetrackingapi.constants.Constant;
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
 import dev.bshashikiran.personalfinancetrackingapi.exception.InvalidPasswordException;
-import dev.bshashikiran.personalfinancetrackingapi.exception.UserNotFoundException;
 import dev.bshashikiran.personalfinancetrackingapi.model.UserCredentials;
 import dev.bshashikiran.personalfinancetrackingapi.model.UserPersonal;
 import dev.bshashikiran.personalfinancetrackingapi.repository.UserCredentialsRepo;
@@ -32,22 +35,26 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Constant constant;
+
     @Override
     public ResponseEntity<Response> authenticateUser(LoginDto loginDto) {
         logger.info("Authenticating User...");
         try {
-            UserCredentials userCredentials = userCredentialsRepo.findByUserName(loginDto.getUserName());
-            if(userCredentials != null) {
-                if(passwordEncoder.matches(loginDto.getPassword(), userCredentials.getUserPassword())) {
+            Optional<UserCredentials> userCredentials = userCredentialsRepo.findByUserName(loginDto.getUserName());
+            if(userCredentials.isPresent()) {
+                UserCredentials userCred = userCredentials.get();
+                if(passwordEncoder.matches(loginDto.getPassword(), userCred.getUserPassword())) {
                     return ResponseEntity.ok(new Response(200, "Login Successful"));
                 } else {
                     throw new InvalidPasswordException("Incorrect Password");
                 }
             } else {
-                throw new UserNotFoundException("Username not found");
+                throw new UsernameNotFoundException("Username not found");
             }
         } 
-        catch (UserNotFoundException e) {
+        catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(404, e.getMessage()));
         }
         catch (InvalidPasswordException e) {
