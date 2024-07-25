@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginResponse;
-import dev.bshashikiran.personalfinancetrackingapi.model.UserCredentials;
 import dev.bshashikiran.personalfinancetrackingapi.service.AuthenticationService;
 
 @RequestMapping("/auth")
@@ -20,7 +19,7 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<UserCredentials> register(@RequestBody LoginDto dto) {
+    public ResponseEntity<LoginResponse> register(@RequestBody LoginDto dto) {
         return ResponseEntity.ok(authenticationService.signup(dto));
     }
 

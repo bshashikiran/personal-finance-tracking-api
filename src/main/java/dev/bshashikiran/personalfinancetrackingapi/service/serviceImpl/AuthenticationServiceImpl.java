@@ -35,13 +35,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private JwtService jwtService;
 
     @Override
-    public UserCredentials signup(LoginDto dto) {
+    public LoginResponse signup(LoginDto dto) {
         logger.info("Registering user...");
         try {
             UserCredentials user = new UserCredentials();
             user.setUserName(dto.getUserName());
             user.setUserPassword(passwordEncoder.encode(dto.getPassword()));
-            return userCredentialsRepo.save(user);
+            userCredentialsRepo.save(user);
+            return authenticate(dto);
         } catch (Exception e) {
             logger.error("Exception occured while registering the user : {}", e.getMessage(), e);
         }
@@ -50,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponse authenticate(LoginDto dto) {
-        logger.info("Authentication user...");
+        logger.info("Authenticating user...");
         LoginResponse loginResponse = new LoginResponse();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUserName(), dto.getPassword()));
@@ -61,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 Long expiresIn = jwtService.getExpirationTime();
 
                 loginResponse.setExpiresIn(expiresIn);
-                loginResponse.setToken(jwtToken);
+                loginResponse.setAuthToken(jwtToken);
                 return loginResponse;
             } else {
                 logger.warn("User Credentials not found");
