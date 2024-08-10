@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     public LoginResponse signup(LoginDto dto) {
@@ -71,6 +76,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             logger.error("Exception occured while authenticating the user : {}", e.getMessage(), e);
         }
         return null;
+    }
+
+    @Override
+    public Boolean authenticateUserToken(String authToken) {
+        logger.info("Authenticating User Token...");
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(jwtService.extractUsername(authToken));
+            return jwtService.isTokenValid(authToken, userDetails);
+        } catch (Exception e) {
+            logger.error("Exception occured while authenticating user token : {}", e.getMessage(), e);
+        }
+        return false;
     }
     
 }

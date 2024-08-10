@@ -2,9 +2,11 @@ package dev.bshashikiran.personalfinancetrackingapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.bshashikiran.personalfinancetrackingapi.dto.LoginDto;
@@ -26,6 +28,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginDto loginUserDto) {
         return ResponseEntity.ok(authenticationService.authenticate(loginUserDto));
+    }
+
+    @GetMapping("/authenticate-token")
+    public ResponseEntity<Boolean> authenticateUserToken(@RequestParam String authToken) {
+        return ResponseEntity.ok(authenticationService.authenticateUserToken(authToken));
     }
 
 }

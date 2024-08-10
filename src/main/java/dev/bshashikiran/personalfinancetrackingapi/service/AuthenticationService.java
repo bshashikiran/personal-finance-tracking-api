@@ -8,5 +8,7 @@ public interface AuthenticationService {
     LoginResponse signup(LoginDto registerUserDto);
 
     LoginResponse authenticate(LoginDto loginUserDto);
+
+    Boolean authenticateUserToken(String authToken);
     
 }
